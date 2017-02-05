@@ -1,0 +1,8 @@
+[program:ha-relay-web-server]
+command=uwsgi --uid www-data -s /tmp/ha-relay-web-server.sock --manage-script --mount /=ha-relay-web-server:app
+directory=/root/ha-relay-web-server
+stdout_logfile=AUTO
+redirect_stderr=true
+autorestart=true
+stdout_logfile_maxbytes=10MB
+stopsignal=TERM

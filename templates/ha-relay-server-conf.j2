@@ -1,0 +1,8 @@
+[program:ha-relay-server]
+command=/usr/local/bin/ha-relay-server -pipe /tmp/conduit
+directory=/home/airborne/ha-relay/server
+stdout_logfile=AUTO
+redirect_stderr=true
+autorestart=true
+stdout_logfile_maxbytes=10MB
+stopsignal=TERM

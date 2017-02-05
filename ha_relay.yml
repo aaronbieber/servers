@@ -1,0 +1,63 @@
+---
+- hosts: web
+  become: true
+  remote_user: airborne
+
+  tasks:
+    - name: ensure that golang is installed
+      apt: name=golang state=latest
+
+    - name: ensure that python 2.7 is installed
+      apt: name=python2.7 state=latest
+
+    - name: ensure that python pip is installed
+      apt: name=python-pip state=latest
+
+    - name: ensure that supervisor is installed
+      apt: name=supervisor state=latest
+
+    - name: install ha-relay-server supervisor config
+      template:
+        src: templates/ha-relay-server-conf.j2
+        dest: /etc/supervisor/conf.d/ha-relay-server.conf
+
+    - name: install ha-relay-web-server supervisor config
+      template:
+        src: templates/ha-relay-web-server-conf.j2
+        dest: /etc/supervisor/conf.d/ha-relay-web-server.conf
+
+    - name: retrieve ha-relay-web-server
+      git:
+        repo: https://github.com/aaronbieber/ha-relay-web-server.git
+        dest: /root/ha-relay-web-server
+        version: v0.1.0
+
+    - name: install ha-relay-web-server requirements
+      command: pip install -r requirements.txt
+      args:
+        chdir: /root/ha-relay-web-server
+
+    - name: retrieve ha-relay server
+      get_url:
+        url: https://github.com/aaronbieber/ha-relay/releases/download/v0.1.0/server_x64
+        dest: /usr/local/bin/ha-relay-server
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: make conduit
+      command: mkfifo /tmp/conduit
+      args:
+        creates: /tmp/conduit
+
+    - name: permission the conduit
+      file:
+        path: /tmp/conduit
+        mode: "u=rw,g=rw,o=rw"
+
+    - name: ensure that supervisor is running
+      service: name=supervisor state=started
+
+    - name: start the ha-relay-server
+      command: supervisorctl start ha-relay-server
+
+    - name: start the ha-relay-web-server
+      command: supervisorctl start ha-relay-web-server
