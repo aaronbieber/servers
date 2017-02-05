@@ -1,0 +1,22 @@
+server {
+  listen 443;
+  server_name {{ bare_domain }} {{ www_domain }};
+
+  root /var/www/{{ bare_domain }}/htdocs;
+  index index.html index.htm;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+{% if ssl %}
+  ssl on;
+  ssl_certificate /etc/letsencrypt/live/{{ bare_domain }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ bare_domain }}/privkey.pem;
+{% endif %}
+
+  error_log /var/www/{{ bare_domain }}/logs/error.log warn;
+  access_log /var/www/{{ bare_domain }}/logs/access.log combined;
+}
+
+# vim: expandtab:ts=2:sw=2:ft=conf

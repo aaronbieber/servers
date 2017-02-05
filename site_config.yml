@@ -1,0 +1,14 @@
+- name: "{{ item.key }}: create site config"
+  template:
+    src: templates/nginx-site-config.j2
+    dest: /etc/nginx/sites-available/{{ item.key }}
+  vars:
+    ssl: "{{ ssl }}"
+    bare_domain: "{{ item.key }}"
+    www_domain: "{{ item.value.domain }}"
+
+- name: "{{ item.key }}: enable site config"
+  file:
+    src: /etc/nginx/sites-available/{{ item.key }}
+    path: /etc/nginx/sites-enabled/{{ item.key }}
+    state: link

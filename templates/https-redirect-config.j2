@@ -1,0 +1,14 @@
+server {
+  listen 80;
+  listen [::]:80;
+
+  server_name
+{% for site, value in sites.iteritems() %}
+    {{ site }}
+    {{ value.domain }}
+{% endfor %};
+
+  return 301 https://$host$request_uri;
+}
+
+# vim: expandtab:ts=2:sw=2:ft=conf

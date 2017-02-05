@@ -1,0 +1,23 @@
+- name: "{{ item.key }}: create site root"
+  file:
+    path: /var/www/{{ item.key }}
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "u+rwx,g+rwx,o=rx"
+
+- name: "{{ item.key }}: create htdocs directory"
+  file:
+    path: /var/www/{{ item.key }}/htdocs
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "u+rwx,g+rwx,o=rx"
+
+- name: "{{ item.key }}: create logs directory"
+  file:
+    path: /var/www/{{ item.key }}/logs
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "u+rwx,g+rwx,o=rx"

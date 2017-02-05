@@ -1,0 +1,73 @@
+---
+- hosts: web
+  become: true
+  remote_user: airborne
+  vars:
+    sites:
+      aaronbieber.com:
+        domain: www.aaronbieber.com
+      bitfiretech.com:
+        domain: www.bitfiretech.com
+      blog.aaronbieber.com:
+        domain: ""
+      diagramwars.com:
+        domain: www.diagramwars.com
+      singleservingphoto.com:
+        domain: www.singleservingphoto.com
+
+  tasks:
+  - name: ensure latest nginx is installed
+    apt: name=nginx state=latest
+
+  - name: ensure apache2 is not installed
+    apt: name=apache2 state=absent
+
+  - name: ensure nginx starts at boot
+    service: name=nginx enabled=yes
+
+  - name: stop nginx
+    service: name=nginx state=stopped
+
+  - name: ensure certbot-auto is available
+    get_url:
+      url: https://dl.eff.org/certbot-auto
+      dest: /root/certbot-auto
+      mode: 0700
+
+  - name: ensure certbot-auto OS packages are installed
+    command: /root/certbot-auto -n --os-packages-only
+    
+  - name: create all sites root
+    file:
+      path: /var/www
+      state: directory
+      owner: www-data
+      group: www-data
+      mode: "u=rwx,g=rwx,o=rX,g+s"
+
+  - include: site_root.yml
+    with_dict: "{{ sites }}"
+
+  - include: site_config.yml
+    with_dict: "{{ sites }}"
+    vars:
+      ssl: false
+
+  - name: start nginx
+    service: name=nginx state=started
+
+  - include: site_ssl.yml
+    with_dict: "{{ sites }}"
+
+  - include: site_config.yml
+    with_dict: "{{ sites }}"
+    vars:
+      ssl: true
+
+  - name: install HTTPS redirect config
+    template: 
+      src: templates/https-redirect-config.j2
+      dest: /etc/nginx/sites-available/https-redirect
+
+  - name: bounce nginx
+    service: name=nginx state=restarted
