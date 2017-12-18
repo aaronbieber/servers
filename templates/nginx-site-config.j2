@@ -1,5 +1,9 @@
 server {
-  listen 443;
+{% if ssl %}
+  listen 443 ssl;
+{% else %}
+  listen 80;
+{% endif %}
   server_name {{ bare_domain }} {{ www_domain }};
 
   root /var/www/{{ bare_domain }}/htdocs;
