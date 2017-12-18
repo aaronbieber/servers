@@ -1,4 +1,4 @@
 - name: "{{ item.key }}: request SSL certificate"
-  command: /root/certbot-auto certonly -n --webroot -w /var/www/{{ item.key }}/htdocs -d {{ item.key }} -d {{ item.value.domain }}
+  command: /root/certbot-auto certonly -n --webroot -w /var/www/{{ item.key }}/htdocs -d {{ item.key }} {% if item.value.domain %} -d {{ item.value.domain }}{% endif %}
   args:
     creates: /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
