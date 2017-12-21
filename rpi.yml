@@ -1,0 +1,30 @@
+---
+- hosts: rpi
+  become: true
+  remote_user: airborne
+  tasks:
+    - name: create root bin directory
+      file:
+        path: /root/bin
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rwx,o=rX"
+
+    - name: install net-reconnect script
+      template:
+        src: templates/net-reconnect.j2
+        dest: /root/bin/net-reconnect
+
+    - name: install net-reconnect in crontab
+      cron:
+        name: "reconnect networking"
+        minute: "*"
+        job: "/bin/bash /root/bin/net-reconnect"
+
+    - name: ensure HDMI hotplug
+      lineinfile:
+        path: /boot/config.txt
+        state: present
+        regexp: '^#hdmi_force_hotplug'
+        line: 'hdmi_force_hotplug=1'

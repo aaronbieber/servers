@@ -5,6 +5,9 @@ default: websites
 websites:
 	ansible-playbook -i hosts -K websites.yml
 
+rpi:
+	ansible-playbook -i hosts -K rpi.yml
+
 renew:
 	ansible-playbook -i hosts -K renew_certs.yml
 

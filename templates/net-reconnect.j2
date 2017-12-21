@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "*****" >> /var/log/net-reconnect.log
+
+live=$(/sbin/ifconfig wlan0 | grep 'inet.*192' -c)
+if [ "$live" -eq 0 ]; then
+  date +%c >> /var/log/net-reconnect.log
+  /bin/systemctl restart networking >> /var/log/net-reconnect.log
+else
+  echo "`date +%c`: OK"
+fi
+
+/sbin/ifconfig wlan0 >> /var/log/net-reconnect.log
