@@ -71,5 +71,11 @@
         src: templates/https-redirect-config.j2
         dest: /etc/nginx/sites-available/https-redirect
 
+    - name: enable HTTPS redirect config
+      file:
+        src: /etc/nginx/sites-available/https-redirect
+        path: /etc/nginx/sites-enabled/https-redirect
+        state: link
+
     - name: bounce nginx
       service: name=nginx state=restarted
