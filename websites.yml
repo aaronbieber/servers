@@ -6,10 +6,12 @@
     sites:
       aaronbieber.com:
         domain: www.aaronbieber.com
-      bitfiretech.com:
-        domain: www.bitfiretech.com
       blog.aaronbieber.com:
         domain: ""
+      deck.aaronbieber.com:
+        domain: ""
+      bitfiretech.com:
+        domain: www.bitfiretech.com
       nathanbieber.com:
         domain: ""
       diagramwars.com:
