@@ -1,6 +1,7 @@
 server {
   listen 443 ssl;
-  listen 80;
+{% if not ssl %}  listen 80;
+{% endif %}
 
   server_name {{ domain }}{% if www_domain %} {{ www_domain }}{% endif %};
 
@@ -15,9 +16,11 @@ server {
     try_files $uri $uri/ =404;
   }
 
+{% if ssl %}
   ssl on;
   ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+{% endif %}
 
   error_log /var/www/{{ domain }}/logs/error.log warn;
   access_log /var/www/{{ domain }}/logs/access.log combined;

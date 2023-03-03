@@ -61,6 +61,11 @@
     - include: site_root.yml
       with_dict: "{{ sites }}"
 
+    - include: site_config.yml
+      with_dict: "{{ sites }}"
+      vars:
+        ssl: false
+
     - name: start nginx
       service: name=nginx state=started
 
@@ -69,6 +74,8 @@
 
     - include: site_config.yml
       with_dict: "{{ sites }}"
+      vars:
+        ssl: true
 
     - name: enable HTTPS redirect config
       file:
