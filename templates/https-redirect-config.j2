@@ -5,7 +5,8 @@ server {
   server_name
 {% for site, value in sites.iteritems() %}
     {{ site }}
-    {{ value.domain }}
+{% if value.www_domain is defined %}    {{ value.www_domain }}
+{% endif %}
 {% endfor %};
 
   return 301 https://$host$request_uri;

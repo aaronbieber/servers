@@ -5,19 +5,18 @@
   vars:
     sites:
       aaronbieber.com:
-        domain: www.aaronbieber.com
+        www_domain: www.aaronbieber.com
       blog.aaronbieber.com:
-        domain: ""
       deck.aaronbieber.com:
-        domain: ""
+      status.aaronbieber.com:
+      aaronbieber.art:
       blog.aaronbieber.coach:
-        domain: ""
+        redirect_domain: "thecuriousleader.work"
+      thecuriousleader.work:
       nathanbieber.com:
-        domain: ""
-      diagramwars.com:
-        domain: www.diagramwars.com
       singleservingphoto.com:
-        domain: www.singleservingphoto.com
+        www_domain: www.singleservingphoto.com
+      bitdepth.show:
 
   tasks:
     - name: ensure latest nginx is installed
@@ -49,13 +48,18 @@
         group: www-data
         mode: "u=rwx,g=rwx,o=rX,g+s"
 
+    - name: install HTTPS redirect config
+      template:
+        src: templates/https-redirect-config.j2
+        dest: /etc/nginx/sites-available/https-redirect
+
+    - name: disable HTTPS redirect config
+      file:
+        path: /etc/nginx/sites-enabled/01-https-redirect
+        state: absent
+
     - include: site_root.yml
       with_dict: "{{ sites }}"
-
-    - include: site_config.yml
-      with_dict: "{{ sites }}"
-      vars:
-        ssl: false
 
     - name: start nginx
       service: name=nginx state=started
@@ -65,18 +69,11 @@
 
     - include: site_config.yml
       with_dict: "{{ sites }}"
-      vars:
-        ssl: true
-
-    - name: install HTTPS redirect config
-      template: 
-        src: templates/https-redirect-config.j2
-        dest: /etc/nginx/sites-available/https-redirect
 
     - name: enable HTTPS redirect config
       file:
         src: /etc/nginx/sites-available/https-redirect
-        path: /etc/nginx/sites-enabled/https-redirect
+        path: /etc/nginx/sites-enabled/01-https-redirect
         state: link
 
     - name: bounce nginx

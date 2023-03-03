@@ -1,26 +1,26 @@
 server {
-{% if ssl %}
   listen 443 ssl;
-{% else %}
   listen 80;
-{% endif %}
-  server_name {{ bare_domain }} {{ www_domain }};
 
-  root /var/www/{{ bare_domain }}/htdocs;
+  server_name {{ domain }}{% if www_domain %} {{ www_domain }}{% endif %};
+
+  {% if redirect_domain %}
+  rewrite ^/?(.*)$ https://{{ redirect_domain }}/$1 permanent;
+  {% else %}
+  root /var/www/{{ domain }}/htdocs;
   index index.html index.htm;
+  {% endif %}
 
   location / {
     try_files $uri $uri/ =404;
   }
 
-{% if ssl %}
   ssl on;
-  ssl_certificate /etc/letsencrypt/live/{{ bare_domain }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/{{ bare_domain }}/privkey.pem;
-{% endif %}
+  ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
-  error_log /var/www/{{ bare_domain }}/logs/error.log warn;
-  access_log /var/www/{{ bare_domain }}/logs/access.log combined;
+  error_log /var/www/{{ domain }}/logs/error.log warn;
+  access_log /var/www/{{ domain }}/logs/access.log combined;
 }
 
 # vim: expandtab:ts=2:sw=2:ft=conf
