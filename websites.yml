@@ -32,14 +32,17 @@
     - name: stop nginx
       service: name=nginx state=stopped
 
-    - name: ensure certbot-auto is available
-      get_url:
-        url: https://dl.eff.org/certbot-auto
-        dest: /root/certbot-auto
-        mode: 0700
+    - name: ensure snapd is up to date
+      command: snap install core && snap refresh core
 
-    - name: ensure certbot-auto OS packages are installed
-      command: /root/certbot-auto -n --os-packages-only
+    - name: ensure certbot snap is installed
+      command: snap install --classic certbot
+
+    - name: make certbot available
+      file:
+        src: /snap/bin/certbot
+        path: /usr/bin/certbot
+        state: link
 
     - name: create all sites root
       file:
