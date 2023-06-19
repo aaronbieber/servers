@@ -49,40 +49,14 @@
         group: www-data
         mode: "u=rwx,g=rwx,o=rX,g+s"
 
-    - name: install HTTPS redirect config
-      template:
-        src: templates/https-redirect-config.j2
-        dest: /etc/nginx/sites-available/https-redirect
-
-    - name: disable HTTPS redirect config
-      file:
-        path: /etc/nginx/sites-enabled/01-https-redirect
-        state: absent
-
     - include: site_root.yml
       with_dict: "{{ sites }}"
 
     - include: site_config.yml
       with_dict: "{{ sites }}"
-      vars:
-        ssl: false
 
     - name: start nginx
       service: name=nginx state=started
 
     - include: site_ssl.yml
       with_dict: "{{ sites }}"
-
-    - include: site_config.yml
-      with_dict: "{{ sites }}"
-      vars:
-        ssl: true
-
-    - name: enable HTTPS redirect config
-      file:
-        src: /etc/nginx/sites-available/https-redirect
-        path: /etc/nginx/sites-enabled/01-https-redirect
-        state: link
-
-    - name: bounce nginx
-      service: name=nginx state=restarted
