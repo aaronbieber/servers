@@ -1,0 +1,6 @@
+- name: "{{ item.key }}: create ssl config"
+  template:
+    src: templates/site-ssl-config.j2
+    dest: /etc/nginx/sites-ssl-available/{{ item.key }}
+  vars:
+    domain: "{{ item.key }}"

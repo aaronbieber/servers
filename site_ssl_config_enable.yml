@@ -1,0 +1,5 @@
+- name: "{{ item.key }}: enable site ssl"
+  file:
+    src: /etc/nginx/sites-ssl-available/{{ item.key }}
+    path: /etc/nginx/sites-ssl-enabled/{{ item.key }}
+    state: link

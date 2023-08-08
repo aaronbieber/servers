@@ -29,11 +29,14 @@
     - name: ensure nginx starts at boot
       service: name=nginx enabled=yes
 
-    - name: stop nginx
-      service: name=nginx state=stopped
+    - name: start nginx
+      service: name=nginx state=started
 
-    - name: ensure snapd is up to date
-      command: snap install core && snap refresh core
+    - name: ensure snapd core is installed
+      command: snap install core
+
+    - name: ensure snapd is updated
+      command: snap refresh core
 
     - name: ensure certbot snap is installed
       command: snap install --classic certbot
@@ -52,14 +55,44 @@
         group: www-data
         mode: "u=rwx,g=rwx,o=rX,g+s"
 
+    - name: create ssl config dir
+      file:
+        path: /etc/nginx/sites-ssl-available
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: remove ssl configs enabled dir
+      file:
+        path: /etc/nginx/sites-ssl-enabled
+        state: absent
+
+    - name: (re-)create ssl configs enabled dir
+      file:
+        path: /etc/nginx/sites-ssl-enabled
+        state: directory
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
     - include: site_root.yml
       with_dict: "{{ sites }}"
 
     - include: site_config.yml
       with_dict: "{{ sites }}"
 
-    - name: start nginx
-      service: name=nginx state=started
-
-    - include: site_ssl.yml
+    - include: site_ssl_config.yml
       with_dict: "{{ sites }}"
+
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - include: site_ssl_cert_request.yml
+      with_dict: "{{ sites }}"
+
+    - include: site_ssl_config_enable.yml
+      with_dict: "{{ sites }}"
+
+    - name: restart nginx
+      service: name=nginx state=restarted
