@@ -18,10 +18,10 @@
       singleservingphoto.com:
         www_domain: www.singleservingphoto.com
       bitdepth.show:
+      therebelweb.org:
 
   tasks:
-    - name: ensure latest nginx is installed
-      apt: name=nginx state=latest
+    - include_tasks: nginx_setup.yml
 
     - name: ensure apache2 is not installed
       apt: name=apache2 state=absent
@@ -76,22 +76,22 @@
         group: root
         mode: "u=rwx,g=rx,o=rx"
 
-    - include: site_root.yml
+    - include_tasks: site_root.yml
       with_dict: "{{ sites }}"
 
-    - include: site_config.yml
+    - include_tasks: site_config.yml
       with_dict: "{{ sites }}"
 
-    - include: site_ssl_config.yml
+    - include_tasks: site_ssl_config.yml
       with_dict: "{{ sites }}"
 
     - name: restart nginx
       service: name=nginx state=restarted
 
-    - include: site_ssl_cert_request.yml
+    - include_tasks: site_ssl_cert_request.yml
       with_dict: "{{ sites }}"
 
-    - include: site_ssl_config_enable.yml
+    - include_tasks: site_ssl_config_enable.yml
       with_dict: "{{ sites }}"
 
     - name: restart nginx

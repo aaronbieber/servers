@@ -4,3 +4,5 @@
     dest: /etc/nginx/sites-ssl-available/{{ item.key }}
   vars:
     domain: "{{ item.key }}"
+    www_domain: "{{ item.value.www_domain | default(false) }}"
+    redirect_domain: "{{ item.value.redirect_domain | default(false) }}"

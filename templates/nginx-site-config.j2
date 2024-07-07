@@ -15,24 +15,7 @@ server {
 }
 
 server {
-  listen 443 ssl;
-
-  server_name {{ domain }}{% if www_domain %} {{ www_domain }}{% endif %};
-  root /var/www/{{ domain }}/htdocs;
-  index index.html index.htm;
-
-  location / {
-    {% if redirect_domain %}
-    rewrite ^/?(.*)$ https://{{ redirect_domain }}/$1 permanent;
-    {% else %}
-    try_files $uri $uri/ =404;
-    {% endif %}
-  }
-
   include /etc/nginx/sites-ssl-enabled/{{ domain}}*;
-
-  error_log /var/www/{{ domain }}/logs/error.log warn;
-  access_log /var/www/{{ domain }}/logs/access.log combined;
 }
 
 # vim: expandtab:ts=2:sw=2:ft=conf
