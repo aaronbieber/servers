@@ -30,6 +30,11 @@
   apt: name=nginx state=latest
   update_cache: true
 
+- name: "[nginx] get Mozilla dhparam"
+  ansible.builtin.get_url:
+    url: https://ssl-config.mozilla.org/ffdhe2048.txt
+    dest: /etc/nginx/dhparam
+
 - name: "[nginx] install main configuration"
   template:
     src: templates/nginx-conf.j2

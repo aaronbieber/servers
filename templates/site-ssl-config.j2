@@ -15,6 +15,7 @@ location / {
 
 ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/{{ domain }}/chain.pem;
 
 error_log /var/www/{{ domain }}/logs/error.log warn;
 access_log /var/www/{{ domain }}/logs/access.log combined;
