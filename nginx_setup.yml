@@ -1,17 +1,27 @@
 - name: "[nginx] install curl"
-  apt: name=curl state=latest
+  ansible.builtin.apt:
+    name: curl
+    state: latest
 
 - name: "[nginx] install gnupg2"
-  apt: name=curl state=latest
+  ansible.builtin.apt:
+    name: gnupg2
+    state: latest
 
 - name: "[nginx] install ca-certificates"
-  apt: name=ca-certificates state=latest
+  ansible.builtin.apt:
+    name: ca-certificates
+    state: latest
 
 - name: "[nginx] install lsb-release"
-  apt: name=lsb-release state=latest
+  ansible.builtin.apt:
+    name: lsb-release
+    state: latest
 
 - name: "[nginx] install ubuntu-keyring"
-  apt: name=ubuntu-keyring state=latest
+  ansible.builtin.apt:
+    name: ubuntu-keyring
+    state: latest
 
 - name: "[nginx] install apt source"
   block:
