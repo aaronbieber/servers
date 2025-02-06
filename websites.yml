@@ -19,6 +19,7 @@
         www_domain: www.singleservingphoto.com
       bitdepth.show:
       therebelweb.org:
+      deleteyourdefaults.show:
 
   tasks:
     - include_tasks: nginx_setup.yml
