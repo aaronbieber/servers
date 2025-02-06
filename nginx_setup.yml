@@ -27,8 +27,10 @@
         repo: "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.asc] http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
 
 - name: "[nginx] install nginx"
-  apt: name=nginx state=latest
-  update_cache: true
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+    update_cache: true
 
 - name: "[nginx] get Mozilla dhparam"
   ansible.builtin.get_url:
