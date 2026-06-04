@@ -38,6 +38,7 @@ http {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "origin-when-cross-origin" always;
     add_header Permissions-Policy "geolocation=(), camera=(), microphone=()";
+    add_header Cache-Control "public, max-age=300";
 
     include /etc/nginx/conf.d/*.conf;
     include /etc/nginx/sites-enabled/*;
