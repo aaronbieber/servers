@@ -21,6 +21,7 @@
       bitdepth.show:
       therebelweb.org:
       deleteyourdefaults.show:
+      ascentclimbing.app:
 
   tasks:
     - include_tasks: nginx_setup.yml
